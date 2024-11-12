@@ -1,0 +1,229 @@
+
+#===========================SETTINGS===========================
+# @url  = http://localhost:3001/api
+@url  = https://cmshotel.onrender.com/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcl9uYW1lIjoia2hvYXZoIiwiZW1haWwiOiJraG9hdmhAZ21haWwuY29tIiwiaWF0IjoxNjgxNTMzNDYyLCJleHAiOjE2ODE1MzM1ODJ9.epiG1bCvHxVz4OUPTwfY-oPv3XpLtPJJR73WgDmddJo
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcl9uYW1lIjoia2hvYXZoIiwiZW1haWwiOiJodXlraG9hNjMwQGdtYWlsLmNvbSIsImlhdCI6MTY3OTUzODgwOCwiZXhwIjoxNjc5NTQyNDA4fQ.UjHK0rDUCTRnbk6m6aBMF0N1VDNVWfOAV6OD5q0URVE
+
+#===========================AUTH===========================
+
+### Register
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+    "full_name": "vo huy khoa",
+    "user_name": "khoavh",
+    "email" : "huykhoa630@gmail.com",
+    "password": "1"
+}
+
+### Login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "user_name": "khoavh",
+    "password": "1"
+}
+
+### Logout
+POST {{url}}/auth/logout
+Content-Type: application/json
+
+{
+    "id": "2"
+}
+
+### refreshToken
+POST {{url}}/auth/refreshtoken
+Content-Type: application/json
+
+{
+    "id": 4,
+    "refresh_token": "{{refresh_token}}"
+}
+
+#===========================USER===========================
+
+
+### List
+GET {{url}}/user
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+### Create
+POST {{url}}/user/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "user_name": "tungson",
+    "full_name": "tung son",
+    "email": "huykhoa630@gmail.com",
+    "password": "1",
+    "identity_number": "2006444928",
+    "phone": "0977425396",
+    "role": "1"
+}
+
+### Update
+PUT {{url}}/user/update
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "id": "7",
+    "user_name": "be anh",
+    "full_name": "a",
+    "email": "huykhoa630@gmail.com",
+    "password": "1",
+    "identity_number": "2006444928",
+    "phone": "0977425396",
+    "role": "1"
+}
+
+
+### Find
+POST {{url}}/user/find
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+
+    "full_name": "khoa",
+    "email": "huykhoa630@gmail.com"
+}
+
+#===========================BOOKING===========================
+
+
+### List
+GET {{url}}/booking
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+### Create
+POST {{url}}/booking/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "user_name": "tungson",
+    "full_name": "tung son",
+    "email": "huykhoa630@gmail.com",
+    "password": "1",
+    "identity_number": "2006444928",
+    "phone": "0977425396",
+    "role": "1"
+}
+
+### Update
+PUT {{url}}/booking/update
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "id": "5",
+    "check_in": "new Date(2023, 2, 15)",
+    "check_out": ""
+}
+
+
+#===========================ROOM_TYPE===========================
+
+
+###  List
+GET {{url}}/room_type
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Create
+POST {{url}}/room_type/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Phong 1 nguoi",
+    "count": 2,
+    "price": "300000"
+}
+
+
+
+#===========================ROOM===========================
+
+
+###  List
+GET {{url}}/room
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Create
+POST {{url}}/room_type/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "name": "1 person",
+    "count": 2,
+    "price": "250000"
+}
+
+
+
+#===========================BOOKING===========================
+
+
+###  List
+GET {{url}}/booking
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Create
+POST {{url}}/booking/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Phong 2 nguoi",
+    "count": 2,
+    "price": "500000"
+}
+
+
+#===========================CLIENT===========================
+
+
+###  List
+GET {{url}}/client
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Create
+POST {{url}}/client/create
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+{
+    "name": "test 2",
+    "email": "test@gmail.com",
+    "identity_number": "500000",
+    "phone": "500000"
+
+}
+
+###  Count
+GET {{url}}/booking/count
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Check In
+GET {{url}}/booking/check_in
+Authorization: Beaer {{token}}
+Content-Type: application/json
+
+###  Check Out
+GET {{url}}/booking/check_out
+Authorization: Beaer {{token}}
+Content-Type: application/json
