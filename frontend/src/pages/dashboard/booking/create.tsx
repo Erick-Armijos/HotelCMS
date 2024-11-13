@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Popup } from "../../../components";
 import { handleApiGetList, handleApiCreate } from "../../../services";
 import { IRoom, initBodyBooking, initBodyClient } from "../../../types";
+import axios from "axios";
 
 export const BookingCreate = () => {
   const navigate = useNavigate();
@@ -14,6 +15,58 @@ export const BookingCreate = () => {
   const [listRoom, setListRoom] = useState<IRoom[]>([]);
   const [clientFormData, setClientFormData] = useState(initBodyClient);
   const [bookingFormData, setBookingFormData] = useState(initBodyBooking);
+
+
+  useEffect(()=>
+    {
+      if(open){
+        let nombreSala:string='';
+        listRoom.forEach((value)=>
+        {
+          if(value.id == Number(bookingFormData.room_id))
+          {
+            nombreSala = value.name;
+          }
+        })
+        const now = new Date()
+        let horaApi = now.getHours();
+        let minutoApi = now.getMinutes();
+
+        minutoApi +=2;
+
+        if(minutoApi>=60)
+        {
+          minutoApi = 0;
+          horaApi +=1;
+          if(horaApi>=24)
+          {
+            horaApi = 0;
+          }
+        }
+        
+        const axiosInstance = axios.create({
+          baseURL: "http://localhost:5000", 
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+        axiosInstance
+          .post("/send_message", {
+            telefono: clientFormData.phone,
+            mensaje: `Saludos, ${clientFormData.name} se ha agendado correctamente su reserva en la habitación ${nombreSala}`,
+            hora: horaApi,
+            minuto: minutoApi,
+          })
+          .then((response) => {
+            console.log("Mensaje enviado correctamente", response.data);
+          })
+          .catch((error) => {
+            console.error("Error al enviar el mensaje", error);
+          });
+      }
+    },[open])
+
 
   const handleClientFormDataChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +89,7 @@ export const BookingCreate = () => {
         ...bookingFormData,
         client_id,
       };
+
 
       await handleApiCreate("booking/create", updatedBookingFormData);
       navigate("/dashboard/booking/list");
