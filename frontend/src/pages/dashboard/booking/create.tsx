@@ -17,55 +17,56 @@ export const BookingCreate = () => {
   const [bookingFormData, setBookingFormData] = useState(initBodyBooking);
 
 
-  useEffect(()=>
-    {
-      if(open){
-        let nombreSala:string='';
-        listRoom.forEach((value)=>
-        {
-          if(value.id == Number(bookingFormData.room_id))
-          {
-            nombreSala = value.name;
-          }
-        })
-        const now = new Date()
-        let horaApi = now.getHours();
-        let minutoApi = now.getMinutes();
+  // Expresión regular para validar teléfono (ajústala según tu necesidad)
+  const validatePhoneNumber = (phone: string) => {
+    const phoneRegex = /^[0-9]{10}$/; 
+    return phoneRegex.test(phone);
+  };
 
-        minutoApi +=2;
-
-        if(minutoApi>=60)
-        {
-          minutoApi = 0;
-          horaApi +=1;
-          if(horaApi>=24)
-          {
-            horaApi = 0;
-          }
+  useEffect(() => {
+    if (open) {
+      let nombreSala: string = '';
+      listRoom.forEach((value) => {
+        if (value.id == Number(bookingFormData.room_id)) {
+          nombreSala = value.name;
         }
-        
-        const axiosInstance = axios.create({
-          baseURL: "http://localhost:5000", 
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        });
-        axiosInstance
-          .post("/send_message", {
-            telefono: clientFormData.phone,
-            mensaje: `Saludos, ${clientFormData.name} se ha agendado correctamente su reserva en la habitación ${nombreSala}`,
-            hora: horaApi,
-            minuto: minutoApi,
-          })
-          .then((response) => {
-            console.log("Mensaje enviado correctamente", response.data);
-          })
-          .catch((error) => {
-            console.error("Error al enviar el mensaje", error);
-          });
+      });
+      const now = new Date();
+      let horaApi = now.getHours();
+      let minutoApi = now.getMinutes();
+
+      minutoApi += 2;
+
+      if (minutoApi >= 60) {
+        minutoApi = 0;
+        horaApi += 1;
+        if (horaApi >= 24) {
+          horaApi = 0;
+        }
       }
-    },[open])
+
+      const axiosInstance = axios.create({
+        baseURL: "http://localhost:5000",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+      axiosInstance
+        .post("/send_message", {
+          telefono: clientFormData.phone,
+          mensaje: `Saludos, ${clientFormData.name} se ha agendado correctamente su reserva en la habitación ${nombreSala}`,
+          hora: horaApi,    
+          minuto: minutoApi,
+        })
+        .then((response) => {
+          console.log("Mensaje enviado correctamente", response.data);
+        })
+        .catch((error) => {
+          console.error("Error al enviar el mensaje", error);
+        });
+    }
+  }, [open]);
 
 
   const handleClientFormDataChange = useCallback(
@@ -82,6 +83,11 @@ export const BookingCreate = () => {
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    if (!validatePhoneNumber(clientFormData.phone)) {
+      alert("Número de teléfono incorrecto. Asegúrate de que tenga 10 dígitos.");
+      return; // Detiene el envío si el teléfono es incorrecto
+    }
+
     try {
       const response = await handleApiCreate("client/create", clientFormData);
       const client_id = response.id;
@@ -89,7 +95,6 @@ export const BookingCreate = () => {
         ...bookingFormData,
         client_id,
       };
-
 
       await handleApiCreate("booking/create", updatedBookingFormData);
       navigate("/dashboard/booking/list");
@@ -199,7 +204,7 @@ export const BookingCreate = () => {
           </div>
         </div>
       </div>
-      <div className=" fixed left-0 bottom-0 w-full h-14 bg-gray-900  flex flex-row justify-end gap-6 items-center px-10 ">
+      <div className="fixed left-0 bottom-0 w-full h-14 bg-gray-900  flex flex-row justify-end gap-6 items-center px-10 ">
         <Button onClick={handleOpen} className="h-10">
           Submit
         </Button>
